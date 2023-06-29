@@ -1,7 +1,6 @@
 
 ### WORKING DIRECTORY AND PACKAGES
 #################################################################################
-setwd('/Users/jmartine/Dropbox/My Mac (Julietas-MacBook-Air.local)/Desktop/')
 
 library(ggplot2)
 library(plyr)
