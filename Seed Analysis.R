@@ -137,10 +137,11 @@ plotwa <- ggplot(plotmod,aes(x,predicted,color=group)) +
         axis.title.x=element_text(size=16), legend.title = element_text(size=14),panel.grid.minor=element_line(color=NA))
 plotwa
 
+
 plotall <- ggplot(plotmod3,aes(x,predicted,color=group)) +
-  scale_color_manual(values=c("#7fcdbb","#7fcdbb","#7fcdbb","#7fcdbb","#f2cc84","#edf8b1")) + 
   geom_point(size=4) +
   scale_shape_manual(values=c(15,16,17,18,19,19)) +
+  scale_color_manual(values=c("#7fcdbb","#7fcdbb","#7fcdbb","#7fcdbb","#f2cc84","#edf8b1")) + 
   geom_errorbar(data=plotmod3, mapping=aes(x=x, ymin=conf.low, ymax=conf.high), width=0.1) +
   geom_line(aes(group=group)) +
   xlab("Shell height (cm)") +
