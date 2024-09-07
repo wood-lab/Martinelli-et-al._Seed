@@ -15,7 +15,7 @@ library(car)
 library(ggeffects)
 
 ### LOADING DATA
-data <- read.csv('seed_data_tweaked.csv', header=TRUE, row.names = NULL, stringsAsFactors=FALSE,  sep=',') 
+data <- read.csv('seed_data_tweaked_100.csv', header=TRUE, row.names = NULL, stringsAsFactors=FALSE,  sep=',') 
 str(data)
 
 # subsetting to remove HI
@@ -32,7 +32,7 @@ data3 <- subset(data, data$State == "WA") # selecting only WA
 
 ### ABUNDANCE PER FLUPSY
 abund_wa <- data3 %>%
-  group_by(FLUPSY) %>% #
+  group_by(FLUPSY) %>% 
   summarize_at(vars(Count), list(sum = sum), na.rm=TRUE)
 
 ### CALCULATING PREVALENCE PER STATE AND FARM/FLUPSY
@@ -70,7 +70,7 @@ akwa_plot <- ggplot(akwa_prev, aes(x= FLUPSY, y=Prev, fill= State, show.legend =
   # scale_fill_manual(values=wes_palette("GrandBudapest1")) + 
   scale_fill_brewer(palette = "YlGnBu") + 
   geom_bar(stat = "identity", col='black', show.legend = FALSE) +
-  ylim(0,20) +
+  ylim(0,25) +
   labs(x = 'ALL FLUPSY', y = 'Prevalence (%)', size=16) 
 akwa_plot + theme_classic(base_size = 18) 
 
@@ -105,7 +105,7 @@ anova(model)
 car::Anova(model, type=3) # getting p-values 
 
 ### MODEL 1: WITHOUT HI-2
-model1 <- glm(Infested ~ FLUPSY + Shell.height..mm., family="binomial", data = data2)
+model1 <- glm(Infested ~ FLUPSY + Shell.height..mm., family="binomial", data = data)
 summary(model1)
 anova(model1)
 car::Anova(model1, type=3) # getting p-values 
@@ -141,12 +141,12 @@ plotwa
 plotall <- ggplot(plotmod3,aes(x,predicted,color=group)) +
   geom_point(size=4) +
   scale_shape_manual(values=c(15,16,17,18,19,19)) +
-  scale_color_manual(values=c("#7fcdbb","#7fcdbb","#7fcdbb","#7fcdbb","#f2cc84","#edf8b1")) + 
+  scale_color_manual(values=c("#7fcdbb","#7fcdbb","#7fcdbb","#7fcdbb","#f2cc84","#edf8b1", "#edf8b1")) + 
   geom_errorbar(data=plotmod3, mapping=aes(x=x, ymin=conf.low, ymax=conf.high), width=0.1) +
   geom_line(aes(group=group)) +
   xlab("Shell height (cm)") +
   ylab(expression(paste("Predicted infestation"))) +
-  #ylim(0,0.5) +
+  ylim(0,1) +
   theme_classic() +
   theme(plot.title=element_text(size=16,hjust=0.5,face="plain"), axis.text.y=element_text(size=16), 
         axis.title.y=element_text(size=16), axis.text.x=element_text(size=16),legend.text = element_text(size=14), 
