@@ -48,13 +48,13 @@ Prev <- (farm_prev$mean)*100
 farm_prev <- cbind(farm_prev, Prev)
 
 ### just for WA and AK
-data1_prev <- data1 %>%
+data_prev1 <- data1 %>%
   group_by(State, FLUPSY) %>% #
   summarize_at(vars(Infested), list(mean = mean), na.rm=TRUE)
 
-data1_prev <- as.data.frame(data1_prev)
-Prev <- (data1_prev$mean)*100
-akwa_prev <- cbind(data1_prev, Prev)
+data_prev1 <- as.data.frame(data_prev1)
+Prev1 <- (data_prev1$mean)*100
+akwa_prev <- cbind(data_prev1, Prev1)
 
 ### just for HI
 dataHI_prev <- dataHI %>%
@@ -67,13 +67,12 @@ hi_prev <- cbind(dataHI_prev, Prev)
 
 ### PLOTTING PREVALENCE
 akwa_plot <- ggplot(akwa_prev, aes(x= FLUPSY, y=Prev, fill= State, show.legend = FALSE))  +
-  # scale_fill_manual(values=wes_palette("GrandBudapest1")) + 
+  #scale_fill_manual(values=c("#F98400FF","#5BBCD6FF","#019875FF","#00A08AFF")) + 
   scale_fill_brewer(palette = "YlGnBu") + 
   geom_bar(stat = "identity", col='black', show.legend = FALSE) +
   ylim(0,25) +
   labs(x = 'ALL FLUPSY', y = 'Prevalence (%)', size=16) 
 akwa_plot + theme_classic(base_size = 18) 
-
 
 hi_plot <- ggplot(hi_prev, aes(x= FLUPSY, y=Prev, fill= State, show.legend = FALSE))  +
        scale_fill_manual(values=wes_palette("GrandBudapest1")) + 
@@ -117,6 +116,13 @@ anova(model2)
 vif(model2)
 car::Anova(model2, type=3) # getting p-values 
 
+## MODEL 3: ALL
+model3 <- glm(Infested ~ FLUPSY + Shell.height..mm., family="binomial", data = data)
+summary(model3)
+anova(model3)
+vif(model3)
+car::Anova(model3, type=3) # getting p-values 
+
 ## FLUPSY SIG, HEIGHT NOT
 plotmod <- ggpredict(model2,c("Shell.height..mm.","FLUPSY"))
 plotmod2 <- ggpredict(model2,c("FLUPSY"))
@@ -138,10 +144,11 @@ plotwa <- ggplot(plotmod,aes(x,predicted,color=group)) +
 plotwa
 
 
+#"#00A08AFF", "#F2AD00FF", "#F98400FF", "#5BBCD6FF"
 plotall <- ggplot(plotmod3,aes(x,predicted,color=group)) +
   geom_point(size=4) +
   scale_shape_manual(values=c(15,16,17,18,19,19)) +
-  scale_color_manual(values=c("#7fcdbb","#7fcdbb","#7fcdbb","#7fcdbb","#f2cc84","#edf8b1", "#edf8b1")) + 
+  scale_color_manual(values=c("#5BBCD6FF","#019875FF","#00A08AFF","#7fcdbb","#f2cc84","#F2AD00FF","#F98400FF" )) + 
   geom_errorbar(data=plotmod3, mapping=aes(x=x, ymin=conf.low, ymax=conf.high), width=0.1) +
   geom_line(aes(group=group)) +
   xlab("Shell height (cm)") +
